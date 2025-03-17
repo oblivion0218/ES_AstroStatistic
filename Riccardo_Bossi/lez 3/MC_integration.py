@@ -10,7 +10,7 @@ sigma_norm = 1 #sigma gaussina norm
 def function(x, sigma):  # Funzione da integrare
     return x**3 * np.exp(-(x**2) / (2 * sigma**2))
 
-N = 100000 #numero di punti per l'integrazione
+N = 10000 #numero di punti per l'integrazione
 
 x_max = 5*sigma # max integrazione
 x_min = 0 # min integrazione
@@ -21,19 +21,19 @@ area_uni = []
 area_norm = []
 
 for i in range(ripetizioni):
-    # --------------------------------- gen gaussiana --------------------
-    X = [] #vettore delle x generate
-
-    while len(X) < N : #array di punti distribuiti gaussianamente per una maggior efficienza
-        X_i = np.random.normal(mu, sigma_norm)
-        if (X_i >= x_min and X_i <= x_max):
-            X.append(X_i)
-
+    # --------------------------------- gen gaussiana -------------------- IMPORTANCE SAMPLING
+    
+    X = [] #vettore delle x generate   
+    X = np.random.normal(mu, sigma_norm,N) #array di punti distribuiti gaussianamente per una maggior efficienza
     X = np.array(X) # boh, va convertito in array perchè python non lo legge sennò
+    X = X[X > 0]
 
-    peso = norm.pdf(X, mu, sigma_norm)
+    peso = (1 / (np.sqrt(2 * np.pi) * sigma_norm)) * np.exp(-((X - mu) ** 2) / (2 * sigma_norm ** 2))
 
-    weighted_values = function(X, sigma) / peso # Moltiplichiamo la funzione per il peso, cioè per il reciproco della PDF
+    weighted_values = function(X, sigma) / peso # Qui entra in gioco il concetto di importance sampling:
+        # Se campionassimo direttamente da una distribuzione uniforme, ogni punto conterebbe in modo uguale.
+        # Qui invece i punti sono estratti da una distribuzione gaussiana.
+        # Per compensare questa scelta, dividiamo per la densità della distribuzione di campionamento (la PDF della gaussiana).
 
     integral = np.mean(weighted_values) # Calcoliamo l'integrale
 
@@ -43,7 +43,7 @@ for i in range(ripetizioni):
 
     integral_uni = (x_max - x_min) * np.mean(function(Y, sigma))
 
-    #----------------------------------------------------------------
+    #-----------------------------------------------------------
 
     area_uni.append(integral_uni)
     area_norm.append(integral)
@@ -79,5 +79,6 @@ plt.errorbar(pos, area_uni, yerr=errore_rel_uni, fmt='x', color='blue', label='U
 plt.plot(pos, area_norm, color='red', linewidth=0.5, label = "aree da dist normale")  # Linea sottile rossa
 plt.plot(pos, area_uni, color='blue', linewidth=0.5, label = "aree da dist uniform")  # Linea sottile blu
  
+pip 
 plt.axhline(y=2 * sigma**4, color='black', linestyle='-', linewidth=2)  
 """
