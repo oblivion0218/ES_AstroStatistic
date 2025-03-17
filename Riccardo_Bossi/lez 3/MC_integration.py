@@ -10,7 +10,7 @@ sigma_norm = 1 #sigma gaussina norm
 def function(x, sigma):  # Funzione da integrare
     return x**3 * np.exp(-(x**2) / (2 * sigma**2))
 
-N_max = 1000 #numero di punti per l'integrazione
+N_max = 10000 #numero di punti per l'integrazione
 
 x_max = 5*sigma # max integrazione
 x_min = 0 # min integrazione
@@ -59,40 +59,19 @@ for N in range(N_max):
     #print ("Il risultato dell'integrale con gen uniforme è:" , integral_uni )
     #print ("Il valore corretto è:" , 2*sigma**4)
 
+plt.figure(figsize=(10, 5))
+plt.xscale('log')
+plt.plot(number, area_norm, label = "importance sampling")
+plt.plot(number, area_uni, label ="uniform sampling")
+plt.xlabel("point for integral")
+plt.ylabel("value")
+plt.axhline(y=2 * sigma**4, color='black', linestyle='-', linewidth=1, label ="true values")
+plt.legend() 
 
-plt.scatter(number,area_uni)
-plt.scatter(number, area_norm)
-#METTI ASSE X LOGARITMICO E IMPLEMENTA CIO CHE SOTTO è ARANCIONE
 plt.show()
 
 
 
-"""" plot dei punti
-plt.errorbar(pos, area_norm, yerr=errore_rel_norm, fmt='o', color='red', label='Normale', capsize=5)
-plt.errorbar(pos, area_uni, yerr=errore_rel_uni, fmt='x', color='blue', label='Uniforme', capsize=5)
-
-plt.plot(pos, area_norm, color='red', linewidth=0.5, label = "aree da dist normale")  # Linea sottile rossa
-plt.plot(pos, area_uni, color='blue', linewidth=0.5, label = "aree da dist uniform")  # Linea sottile blu
- 
-pip 
-plt.axhline(y=2 * sigma**4, color='black', linestyle='-', linewidth=2)  
-
-import numpy as np
-from matplotlib import pyplot as plt
-from scipy.optimize import curve_fit
-from scipy.stats import norm
-
-mu = 3.4  #centroide gaussiana, ricavata dal grafico della funzione
-sigma = 2 # sigma funzione
-sigma_norm = 1 #sigma gaussina norm
-
-def function(x, sigma):  # Funzione da integrare
-    return x**3 * np.exp(-(x**2) / (2 * sigma**2))
-
-N = 10000 #numero di punti per l'integrazione
-
-x_max = 5*sigma # max integrazione
-x_min = 0 # min integrazione
 
 ripetizioni = 1000
 
@@ -132,23 +111,43 @@ for i in range(ripetizioni):
     #print ("Il valore corretto è:" , 2*sigma**4)
 
 
+mean_norm = np.mean(area_norm)
+median_norm = np.median(area_norm)
+std_norm = np.std(area_norm)
+
+mean_uni = np.mean(area_uni)
+median_uni = np.median(area_uni)
+std_uni = np.std(area_uni)
+
 plt.figure(figsize=(10, 5))
 
-# istogramma per le aree calcolate con distribuzione normale
+# Istogramma per la distribuzione normale
 plt.subplot(1,2,1)
-plt.hist(area_norm, bins=30, color='red', alpha=0.6, label='Normale', edgecolor='black')
+plt.hist(area_norm, bins=30, color='red', alpha=0.6, edgecolor='black')
 plt.xlabel("Valore dell'integrale")
 plt.ylabel("Frequenza")
-plt.legend()
+# Aggiungi testo con le statistiche
+plt.text(0.95, 0.95, 
+          f"Distribuzione: Normale\nMedia: {mean_norm:.2f}\nMediana: {median_norm:.2f}\nDev std: {std_norm:.2f}",
+         transform=plt.gca().transAxes,
+         verticalalignment='top',
+         horizontalalignment='right',
+         fontsize=10,
+         bbox=dict(boxstyle="round", facecolor="white", alpha=0.8))
 
-# istogramma per le aree calcolate con distribuzione uniforme
+# Istogramma per la distribuzione uniforme
 plt.subplot(1,2,2)
 plt.hist(area_uni, bins=30, color='blue', alpha=0.6, label='Uniforme', edgecolor='black')
 plt.xlabel("Valore dell'integrale")
 plt.ylabel("Frequenza")
-plt.legend()
+# Aggiungi testo con le statistiche
+plt.text(0.95, 0.95, 
+        f"Distribuzione: Uniforme\nMedia: {mean_uni:.2f}\nMediana: {median_uni:.2f}\nDev std: {std_uni:.2f}",
+         transform=plt.gca().transAxes,
+         verticalalignment='top',
+         horizontalalignment='right',
+         fontsize=10,
+         bbox=dict(boxstyle="round", facecolor="white", alpha=0.8))
 
+plt.tight_layout()
 plt.show()
-
-
-"""
