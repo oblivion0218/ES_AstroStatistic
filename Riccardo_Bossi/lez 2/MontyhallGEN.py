@@ -27,16 +27,10 @@ for N in range(3 , K+1): # N = number of door in each cycle
         scelta = random.randint(0,N-1) # The door initially chosen by the player
         doors[position] = 1 #put back the door the prize
 
-        #print("doors: ", doors , "\n")
-
         s = 0 # number of cell delete befor scelta
         p = 0 # number of cell delete befor position
 
-        #print("position:", position, "\n", "scelta:", scelta)
-
         M = random.randint(1,N-2)  #Number of doors open by the host, min 1
-
-        #print("M: ", M, "\n")
 
         prob_newcome.append(1/(N-M)) #what's the probability for the newcome in each cycle
 
@@ -53,23 +47,12 @@ for N in range(3 , K+1): # N = number of door in each cycle
         s = sum(1 for pos in pos_to_del if pos < scelta)
         p = sum(1 for pos in pos_to_del if pos < position)
 
-        #print ("pos_to_del:" , pos_to_del , "\n")
-
         doors = np.delete(doors, list(pos_to_del)) #opening of the doors
 
-        #print("doors2: ", doors , "\n")
-
-        #correction for p and s
-        position = position - p 
+        position = position - p  #correction for p and s
         scelta = scelta - s
-        
-        #print("P" , p, "\n","S", s , "\n")
-
-        #print("position 2 :", position, "\n", "scelta 2 :", scelta)
 
         change = random.randint(0,1) # 0 = doesn't switch, 1 = switches
-
-        #print("change: ", change, "\n")
 
         #Player doesn't switch
         if scelta == position and change == 0 :
