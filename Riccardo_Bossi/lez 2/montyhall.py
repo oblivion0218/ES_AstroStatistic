@@ -13,7 +13,7 @@ loss_no_switch = 0  # Losses without switching doors
 for i in range(N):
 
     position=random.randint(0,2)  # Position of the prize
-    doors[position] = 1 
+    doors[position] = 1 # put the car behind the door
     scelta = random.randint(0,2) # The door initially chosen by the player
     change = random.randint(0,1) # 0 = doesn't switch, 1 = switches
 
